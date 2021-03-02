@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 const buttons = document.querySelector('.adds');
 const modal = document.querySelector('#modal');
 const contentLabel = modal.querySelector('.label.content');
@@ -31,6 +40,7 @@ function showModal(event) {
     }
     const input = contentLabel.lastChild;
     if (input.tagName === 'INPUT' || input.tagName === 'TEXTAREA') {
+        modalForm.reset();
         input.remove();
     }
     const contentTitle = contentLabel.querySelector('.name');
@@ -56,6 +66,17 @@ function hideModal() {
     modal.classList.add('hidden');
     modalForm.reset();
     contentLabel.lastChild.remove();
+}
+function checkURL(url) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const res = yield fetch(url);
+        if (res.status === 200) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    });
 }
 function getItemContents(item) {
     let structure;
@@ -122,24 +143,31 @@ function addItem(itemObj) {
     list.appendChild(item);
 }
 function onModalAddClick(event) {
-    event.preventDefault();
-    const text = modalForm[0].value;
-    const content = modalForm[1]
-        .value;
-    if (text === '' || content === '') {
-        alert('내용을 입력해주세요');
-        return;
-    }
-    const item = {
-        id: Date.now(),
-        kind: clickedButton,
-        text,
-        content,
-    };
-    addItem(item);
-    hideModal();
-    items[item.id] = item;
-    saveItems(items);
+    return __awaiter(this, void 0, void 0, function* () {
+        event.preventDefault();
+        const text = modalForm[0].value;
+        const content = modalForm[1]
+            .value;
+        if (text === '' || content === '') {
+            alert('내용을 입력해주세요');
+            return;
+        }
+        if ((clickedButton === 'video' || clickedButton === 'image') &&
+            !(yield checkURL(content))) {
+            alert('URL을 다시 입력해주세요');
+            return;
+        }
+        const item = {
+            id: Date.now(),
+            kind: clickedButton,
+            text,
+            content,
+        };
+        addItem(item);
+        hideModal();
+        items[item.id] = item;
+        saveItems(items);
+    });
 }
 function saveItems(items) {
     localStorage.setItem('items', JSON.stringify(items));

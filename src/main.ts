@@ -55,6 +55,7 @@ function showModal(event: MouseEvent) {
   // 모달이 표시된 상태에서 다시 헤더에 있는 버튼을 클릭할 때, 그에 맞는 입력기 추가하기 위해 이미 추가됐던 입력기 삭제
   const input = contentLabel.lastChild as HTMLElement;
   if (input.tagName === 'INPUT' || input.tagName === 'TEXTAREA') {
+    modalForm.reset();
     input.remove();
   }
   // 추가할 아이템의 종류에 따라 입력기의 종류와 제목 변경
@@ -82,6 +83,15 @@ function hideModal() {
   modal.classList.add('hidden');
   modalForm.reset();
   contentLabel.lastChild!.remove();
+}
+
+async function checkURL(url: string) {
+  const res = await fetch(url);
+  if (res.status === 200) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 // 아이템 종류에 맞는 innerHTML 반환
@@ -152,7 +162,7 @@ function addItem(itemObj: Item) {
   list.appendChild(item);
 }
 
-function onModalAddClick(event: MouseEvent) {
+async function onModalAddClick(event: MouseEvent) {
   event.preventDefault();
 
   const text = (modalForm[0] as HTMLInputElement).value;
@@ -163,6 +173,14 @@ function onModalAddClick(event: MouseEvent) {
     alert('내용을 입력해주세요');
     return;
   }
+  if (
+    (clickedButton === 'video' || clickedButton === 'image') &&
+    !(await checkURL(content))
+  ) {
+    alert('URL을 다시 입력해주세요');
+    return;
+  }
+
   const item: Item = {
     id: Date.now(),
     kind: clickedButton,
