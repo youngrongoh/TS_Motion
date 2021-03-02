@@ -22,7 +22,7 @@ function createContentInput(kind) {
     }
     return input;
 }
-function onButtonClick(event) {
+function showModal(event) {
     var _a;
     const target = event.target;
     if (target.tagName !== 'BUTTON') {
@@ -51,7 +51,7 @@ function onButtonClick(event) {
     }
     modal.classList.remove('hidden');
 }
-function exitModal() {
+function hideModal() {
     modal.classList.add('hidden');
     modalForm.reset();
     contentLabel.lastChild.remove();
@@ -116,18 +116,18 @@ function addItem(event) {
     const text = modalForm[0].value;
     const content = modalForm[1]
         .value;
-    if (text === undefined || content === undefined) {
+    if (text === '' || content === '') {
         alert('내용을 입력해주세요');
         return;
     }
     const itemContents = getItemContents(clickedButton, text, content);
     const item = createItem(itemContents);
     list.appendChild(item);
-    exitModal();
+    hideModal();
 }
-buttons.addEventListener('click', onButtonClick);
+buttons.addEventListener('click', showModal);
 modalExit.addEventListener('click', (event) => {
     event.preventDefault();
-    exitModal();
+    hideModal();
 });
 modalAdd.addEventListener('click', addItem);
