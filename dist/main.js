@@ -6,6 +6,7 @@ const modalExit = document.querySelector('.exit');
 const modalAdd = modal.querySelector('.add');
 const list = document.querySelector('.list');
 const modalForm = modal.querySelector('.form-box');
+const items = {};
 let clickedButton;
 function createContentInput(kind) {
     let input;
@@ -56,37 +57,39 @@ function hideModal() {
     modalForm.reset();
     contentLabel.lastChild.remove();
 }
-function getItemContents(kind, text, content) {
+function getItemContents(item) {
     let structure;
-    switch (kind) {
+    let content;
+    switch (item.kind) {
         case 'video':
             content = `
-        <iframe class="media" src="${content}" frameborder="0"
+        <iframe class="media" src="${item.content}" frameborder="0"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen></iframe>`;
             structure = 'lr';
             break;
         case 'image':
-            content = `<img class="media" src="${content}">`;
+            content = `<img class="media" src="${item.content}">`;
             structure = 'lr';
             break;
         case 'task':
             content = `
         <label class="todo" for="todo">
           <input type="checkbox" id="todo">
-          <span class="text">${content}</span>
+          <span class="text">${item.content}</span>
         </label>`;
             structure = 'tb';
             break;
         case 'note':
-            content = `<p class="text">${content}</p>`;
+            content = `<p class="text">${item.content}</p>`;
             structure = 'tb';
             break;
         default:
-            throw new Error(`invalid kind of item: ${kind}`);
+            throw new Error(`invalid kind of item: ${item.kind}`);
     }
     return {
-        text,
+        id: item.id,
+        text: item.text,
         content,
         structure,
     };
@@ -94,6 +97,7 @@ function getItemContents(kind, text, content) {
 function createItem(itemContents) {
     const item = document.createElement('li');
     item.setAttribute('class', `item ${itemContents.structure}`);
+    item.setAttribute('data-id', `${itemContents.id}`);
     if (itemContents.structure === 'lr') {
         item.innerHTML = `
     <div class="content">
@@ -112,7 +116,12 @@ function createItem(itemContents) {
     }
     return item;
 }
-function addItem(event) {
+function addItem(itemObj) {
+    const itemContents = getItemContents(itemObj);
+    const item = createItem(itemContents);
+    list.appendChild(item);
+}
+function onModalAddClick(event) {
     event.preventDefault();
     const text = modalForm[0].value;
     const content = modalForm[1]
@@ -121,15 +130,45 @@ function addItem(event) {
         alert('내용을 입력해주세요');
         return;
     }
-    const itemContents = getItemContents(clickedButton, text, content);
-    const item = createItem(itemContents);
-    item.addEventListener('click', item.remove);
-    list.appendChild(item);
+    const item = {
+        id: Date.now(),
+        kind: clickedButton,
+        text,
+        content,
+    };
+    addItem(item);
     hideModal();
+    items[item.id] = item;
+    saveItems(items);
+}
+function saveItems(items) {
+    localStorage.setItem('items', JSON.stringify(items));
 }
 buttons.addEventListener('click', showModal);
 modalExit.addEventListener('click', (event) => {
     event.preventDefault();
     hideModal();
 });
-modalAdd.addEventListener('click', addItem);
+modalAdd.addEventListener('click', onModalAddClick);
+window.addEventListener('load', () => {
+    const stored = localStorage.getItem('items');
+    if (!stored) {
+        return;
+    }
+    const parsed = JSON.parse(stored);
+    Object.keys(parsed).forEach((key) => {
+        addItem(parsed[key]);
+    });
+    Object.assign(items, parsed);
+});
+list.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!target.matches('.delete')) {
+        return;
+    }
+    const item = target.parentElement;
+    const id = Number(item.dataset.id);
+    item.remove();
+    delete items[id];
+    saveItems(items);
+});

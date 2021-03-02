@@ -3,9 +3,21 @@ type ItemKinds = 'video' | 'image' | 'task' | 'note';
 type ItemStructure = 'lr' | 'tb';
 
 type ItemContents = {
+  id: number;
   text: string;
   content: string;
   structure: ItemStructure;
+};
+
+type Item = {
+  id: number;
+  kind: ItemKinds;
+  text: string;
+  content: string;
+};
+
+type Items = {
+  [K: number]: Item;
 };
 
 const buttons = <HTMLDivElement>document.querySelector('.adds');
@@ -15,6 +27,8 @@ const modalExit = <HTMLElement>document.querySelector('.exit');
 const modalAdd = <HTMLButtonElement>modal.querySelector('.add');
 const list = <HTMLUListElement>document.querySelector('.list');
 const modalForm = <HTMLFormElement>modal.querySelector('.form-box');
+
+const items: Items = {};
 
 let clickedButton: ItemKinds;
 
@@ -71,41 +85,39 @@ function hideModal() {
 }
 
 // 아이템 종류에 맞는 innerHTML 반환
-function getItemContents(
-  kind: ItemKinds,
-  text: string,
-  content: string
-): ItemContents {
+function getItemContents(item: Item): ItemContents {
   let structure: ItemStructure;
-  switch (kind) {
+  let content: string;
+  switch (item.kind) {
     case 'video':
       content = `
-        <iframe class="media" src="${content}" frameborder="0"
+        <iframe class="media" src="${item.content}" frameborder="0"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen></iframe>`;
       structure = 'lr';
       break;
     case 'image':
-      content = `<img class="media" src="${content}">`;
+      content = `<img class="media" src="${item.content}">`;
       structure = 'lr';
       break;
     case 'task':
       content = `
         <label class="todo" for="todo">
           <input type="checkbox" id="todo">
-          <span class="text">${content}</span>
+          <span class="text">${item.content}</span>
         </label>`;
       structure = 'tb';
       break;
     case 'note':
-      content = `<p class="text">${content}</p>`;
+      content = `<p class="text">${item.content}</p>`;
       structure = 'tb';
       break;
     default:
-      throw new Error(`invalid kind of item: ${kind}`);
+      throw new Error(`invalid kind of item: ${item.kind}`);
   }
   return {
-    text,
+    id: item.id,
+    text: item.text,
     content,
     structure,
   };
@@ -115,6 +127,7 @@ function createItem(itemContents: ItemContents): HTMLElement {
   const item = document.createElement('li');
   // 아이템 종류에 따라 구조 변경 및 입력 받은 내용 삽입
   item.setAttribute('class', `item ${itemContents.structure}`);
+  item.setAttribute('data-id', `${itemContents.id}`);
   if (itemContents.structure === 'lr') {
     item.innerHTML = `
     <div class="content">
@@ -133,7 +146,13 @@ function createItem(itemContents: ItemContents): HTMLElement {
   return item;
 }
 
-function addItem(event: MouseEvent) {
+function addItem(itemObj: Item) {
+  const itemContents = getItemContents(itemObj);
+  const item = createItem(itemContents);
+  list.appendChild(item);
+}
+
+function onModalAddClick(event: MouseEvent) {
   event.preventDefault();
 
   const text = (modalForm[0] as HTMLInputElement).value;
@@ -144,11 +163,20 @@ function addItem(event: MouseEvent) {
     alert('내용을 입력해주세요');
     return;
   }
-  const itemContents = getItemContents(clickedButton, text, content);
-  const item = createItem(itemContents);
-  item.addEventListener('click', item.remove);
-  list.appendChild(item);
+  const item: Item = {
+    id: Date.now(),
+    kind: clickedButton,
+    text,
+    content,
+  };
+  addItem(item);
   hideModal();
+  items[item.id] = item;
+  saveItems(items);
+}
+
+function saveItems(items: Items) {
+  localStorage.setItem('items', JSON.stringify(items));
 }
 
 buttons.addEventListener('click', showModal);
@@ -156,4 +184,26 @@ modalExit.addEventListener('click', (event: MouseEvent) => {
   event.preventDefault();
   hideModal();
 });
-modalAdd.addEventListener('click', addItem);
+modalAdd.addEventListener('click', onModalAddClick);
+window.addEventListener('load', () => {
+  const stored = localStorage.getItem('items');
+  if (!stored) {
+    return;
+  }
+  const parsed = JSON.parse(stored);
+  Object.keys(parsed).forEach((key) => {
+    addItem(parsed[key]);
+  });
+  Object.assign(items, parsed);
+});
+list.addEventListener('click', (event: MouseEvent) => {
+  const target = event.target as HTMLElement;
+  if (!target.matches('.delete')) {
+    return;
+  }
+  const item = target.parentElement!;
+  const id = Number(item.dataset.id);
+  item.remove();
+  delete items[id];
+  saveItems(items);
+});
