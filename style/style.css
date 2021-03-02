@@ -43,7 +43,8 @@ p {
   margin: 0;
 }
 
-input {
+input,
+textarea {
   background-color: transparent;
   border: 0;
   outline: none;
@@ -194,6 +195,12 @@ video {
   margin-top: 0.2em;
   margin-bottom: 0.8em;
   border-bottom: 1px solid var(--color-yellow);
+}
+
+textarea.input {
+  min-height: 5em;
+  border: 1px solid var(--color-yellow);
+  resize: none;
 }
 
 #modal .add {

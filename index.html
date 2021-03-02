@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MOTION - 나만의 마그넷 노트</title>
   <link rel="stylesheet" href="style/style.css">
+  <script module src="dist/main.js" defer></script>
 </head>
 
 <body>
@@ -61,27 +62,14 @@
       <p class="copy">©Copyright by youngrong.oh. All right reserved.</p>
     </footer>
   </section>
-  <section id="modal">
+  <section id="modal" class="hidden">
     <form class="form-box">
       <label for="title" class="label">
         <span class="name">Title</span>
         <input class="input" id="title" type="text">
       </label>
-      <label for="content" class="label">
-        <span class="name">URL</span>
-        <input class="input" id="content" type="text">
-      </label>
-      <button class="add">add</button>
-      <button class="exit">❌</button>
-    </form>
-    <form class="form-box hidden">
-      <label for="title" class="label">
-        <span class="name">Title</span>
-        <input class="input" id="title" type="text">
-      </label>
-      <label for="content" class="label">
-        <span class="name">Body</span>
-        <textarea class="input" id="content"></textarea>
+      <label for="content" class="label content">
+        <span class="name"></span>
       </label>
       <button class="add">add</button>
       <button class="exit">❌</button>
