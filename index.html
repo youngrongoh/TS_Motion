@@ -6,48 +6,62 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MOTION - 나만의 마그넷 노트</title>
+  <link rel="stylesheet" href="style/style.css">
 </head>
 
 <body>
-  <header id="header">
-    <h1 class="title">MOTION</h1>
-    <div class="adds">
-      <button class="add">video</button>
-      <button class="add">image</button>
-      <button class="add">task</button>
-      <button class="add">note</button>
-    </div>
-  </header>
-  <main id="notes">
-    <ul class="list">
-      <li class="item lr">
-        <div class="content">
-          <video class="media" src="">
-        </div>
-        <p class="text">text</p>
-      </li>
-      <li class="item lr">
-        <div class="content">
-          <img class="media" src="">
-        </div>
-        <p class="text">text</p>
-      </li>
-      <li class="item tb">
-        <h2 class="title">Title</h2>
-        <div class="content">
+  <section id="app">
+    <header id="header">
+      <h1 class="title">MOTION</h1>
+      <div class="adds">
+        <button class="add">video</button>
+        <button class="add">image</button>
+        <button class="add">task</button>
+        <button class="add">note</button>
+      </div>
+    </header>
+    <main id="notes">
+      <ul class="list">
+        <li class="item lr">
+          <div class="content">
+            <iframe class="media" src="https://www.youtube.com/embed/9oMIbGgeKoo" frameborder="0"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+          </div>
           <p class="text">text</p>
-        </div>
-      </li>
-      <li class="item tb">
-        <h2 class="title">Title</h2>
-        <div class="content">
-          <label for="todo">
-            <input type="checkbox" id="todo">
-            <span class="text">todo</span>
-          </label>
-        </div>
-      </li>
-    </ul>
+          <button class="delete">❌</button>
+        </li>
+        <li class="item lr">
+          <div class="content">
+            <img class="media" src="https://picsum.photos/640/360">
+          </div>
+          <p class="text">text</p>
+          <button class="delete">❌</button>
+        </li>
+        <li class="item tb">
+          <h2 class="title">Title</h2>
+          <div class="content">
+            <p class="text">text</p>
+          </div>
+          <button class="delete">❌</button>
+        </li>
+        <li class="item tb">
+          <h2 class="title">Title</h2>
+          <div class="content">
+            <label class="todo" for="todo">
+              <input type="checkbox" id="todo">
+              <span class="text">todo</span>
+            </label>
+          </div>
+          <button class="delete">❌</button>
+        </li>
+      </ul>
+    </main>
+    <footer id="footer">
+      <p class="copy">©Copyright by youngrong.oh. All right reserved.</p>
+    </footer>
+  </section>
+  <section id="modal">
     <form class="form-box">
       <label for="title" class="label">
         <span class="name">Title</span>
@@ -57,8 +71,10 @@
         <span class="name">URL</span>
         <input class="input" id="content" type="text">
       </label>
+      <button class="add">add</button>
+      <button class="exit">❌</button>
     </form>
-    <form class="form-box">
+    <form class="form-box hidden">
       <label for="title" class="label">
         <span class="name">Title</span>
         <input class="input" id="title" type="text">
@@ -67,11 +83,10 @@
         <span class="name">Body</span>
         <textarea class="input" id="content"></textarea>
       </label>
+      <button class="add">add</button>
+      <button class="exit">❌</button>
     </form>
-  </main>
-  <footer id="footer">
-    <p class="copy">©Copyright youngrong.oh</p>
-  </footer>
+  </section>
 </body>
 
 </html>
