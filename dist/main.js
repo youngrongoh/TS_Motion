@@ -107,7 +107,8 @@ function createItem(itemContents) {
       <h2 class="title">${itemContents.text}</h2>
       <div class="content">
         ${itemContents.content}
-      </div>`;
+      </div>
+      <button class="delete">❌</button>`;
     }
     return item;
 }
@@ -122,6 +123,7 @@ function addItem(event) {
     }
     const itemContents = getItemContents(clickedButton, text, content);
     const item = createItem(itemContents);
+    item.addEventListener('click', item.remove);
     list.appendChild(item);
     hideModal();
 }
