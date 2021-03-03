@@ -32,6 +32,18 @@ const items: Items = {};
 
 let clickedButton: ItemKinds;
 
+type Positions = {
+  [K: number]: { top: number; bottom: number };
+};
+const positions: Positions = {};
+let moving: HTMLLIElement | null;
+let timer: number;
+let movable: boolean = false;
+let prevX: number;
+let prevY: number;
+let movedX: number = 0;
+let movedY: number = 0;
+
 function createContentInput(kind: 'input' | 'textarea'): HTMLElement {
   let input: HTMLElement;
   if (kind === 'input') {
@@ -140,18 +152,22 @@ function createItem(itemContents: ItemContents): HTMLElement {
   item.setAttribute('data-id', `${itemContents.id}`);
   if (itemContents.structure === 'lr') {
     item.innerHTML = `
-    <div class="content">
-    ${itemContents.content}
-    </div>
-    <p class="text">${itemContents.text}</p>
-    <button class="delete">❌</button>`;
+    <div class="container">
+      <div class="content">
+      ${itemContents.content}
+      </div>
+      <p class="text">${itemContents.text}</p>
+      <button class="delete">❌</button>
+    </div>`;
   } else {
     item.innerHTML = `
+    <div class="container">
       <h2 class="title">${itemContents.text}</h2>
       <div class="content">
         ${itemContents.content}
       </div>
-      <button class="delete">❌</button>`;
+      <button class="delete">❌</button>
+    </div>`;
   }
   return item;
 }
@@ -160,6 +176,10 @@ function addItem(itemObj: Item) {
   const itemContents = getItemContents(itemObj);
   const item = createItem(itemContents);
   list.appendChild(item);
+  const top = item.getBoundingClientRect().top;
+  const bottom = item.getBoundingClientRect().bottom;
+  positions[Object.keys(positions).length] = { top, bottom };
+  console.log(positions);
 }
 
 async function onModalAddClick(event: MouseEvent) {
@@ -198,11 +218,14 @@ function saveItems(items: Items) {
 }
 
 buttons.addEventListener('click', showModal);
+
 modalExit.addEventListener('click', (event: MouseEvent) => {
   event.preventDefault();
   hideModal();
 });
+
 modalAdd.addEventListener('click', onModalAddClick);
+
 window.addEventListener('load', () => {
   const stored = localStorage.getItem('items');
   if (!stored) {
@@ -214,6 +237,7 @@ window.addEventListener('load', () => {
   });
   Object.assign(items, parsed);
 });
+
 list.addEventListener('click', (event: MouseEvent) => {
   const target = event.target as HTMLElement;
   if (!target.matches('.delete')) {
@@ -224,4 +248,49 @@ list.addEventListener('click', (event: MouseEvent) => {
   item.remove();
   delete items[id];
   saveItems(items);
+});
+
+list.addEventListener('mousedown', (event: MouseEvent) => {
+  const target = (event.target as HTMLElement).closest('li');
+  if (!target) {
+    return;
+  }
+  let t = 0;
+  timer = setInterval(() => {
+    if (t > 3) {
+      target.classList.add('move');
+      prevX = event.clientX;
+      prevY = event.clientY;
+      moving = target;
+      movable = true;
+      clearInterval(timer);
+    }
+    t += 1;
+  }, 100);
+});
+
+list.addEventListener('mousemove', (event: MouseEvent) => {
+  if (!movable) return;
+  const currX = event.clientX;
+  const currY = event.clientY;
+  const moveX = currX - prevX;
+  const moveY = currY - prevY;
+  prevX = currX;
+  prevY = currY;
+  requestAnimationFrame(() => {
+    if (!moving) return;
+    movedX += moveX;
+    movedY += moveY;
+    moving.style.transform = `
+    translate(${movedX}px, ${movedY}px)`;
+  });
+});
+
+window.addEventListener('mouseup', () => {
+  clearInterval(timer);
+  movable = false;
+  if (moving) {
+    moving.classList.remove('move');
+    moving = null;
+  }
 });

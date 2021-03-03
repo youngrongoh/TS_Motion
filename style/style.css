@@ -20,6 +20,7 @@ body {
   color: var(--color-white);
   margin: 0;
   overflow: hidden;
+  user-select: none;
 }
 
 button {
@@ -104,26 +105,40 @@ video {
 }
 
 .list {
-  padding: 1.5em;
+  position: relative;
+  height: 100%;
+  padding: 1.5em 0;
 }
 
 .item {
+  width: 100%;
+  position: relative;
+  padding: 0 1.5em 1em 1.5em;
+}
+
+.item.move {
+  position: absolute;
+  z-index: 1;
+  opacity: 0.8;
+}
+
+.container {
   position: relative;
   display: flex;
   height: 10em;
+  width: 100%;
   background-color: var(--color-dark-green);
-  margin-bottom: 1em;
   border-radius: 0.5em;
   box-shadow: 3px 3px 8px 2px rgba(0, 0, 0, 0.31);
   transition: transform 300ms ease;
 }
 
-.item.tb {
+.item.tb .container {
   padding: 1em;
   flex-direction: column;
 }
 
-.item:hover {
+.item .container:hover {
   transform: scale(1.02);
 }
 

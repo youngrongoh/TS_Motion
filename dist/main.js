@@ -17,6 +17,14 @@ const list = document.querySelector('.list');
 const modalForm = modal.querySelector('.form-box');
 const items = {};
 let clickedButton;
+const positions = {};
+let moving;
+let timer;
+let movable = false;
+let prevX;
+let prevY;
+let movedX = 0;
+let movedY = 0;
 function createContentInput(kind) {
     let input;
     if (kind === 'input') {
@@ -121,19 +129,23 @@ function createItem(itemContents) {
     item.setAttribute('data-id', `${itemContents.id}`);
     if (itemContents.structure === 'lr') {
         item.innerHTML = `
-    <div class="content">
-    ${itemContents.content}
-    </div>
-    <p class="text">${itemContents.text}</p>
-    <button class="delete">❌</button>`;
+    <div class="container">
+      <div class="content">
+      ${itemContents.content}
+      </div>
+      <p class="text">${itemContents.text}</p>
+      <button class="delete">❌</button>
+    </div>`;
     }
     else {
         item.innerHTML = `
+    <div class="container">
       <h2 class="title">${itemContents.text}</h2>
       <div class="content">
         ${itemContents.content}
       </div>
-      <button class="delete">❌</button>`;
+      <button class="delete">❌</button>
+    </div>`;
     }
     return item;
 }
@@ -141,6 +153,10 @@ function addItem(itemObj) {
     const itemContents = getItemContents(itemObj);
     const item = createItem(itemContents);
     list.appendChild(item);
+    const top = item.getBoundingClientRect().top;
+    const bottom = item.getBoundingClientRect().bottom;
+    positions[Object.keys(positions).length] = { top, bottom };
+    console.log(positions);
 }
 function onModalAddClick(event) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -199,4 +215,48 @@ list.addEventListener('click', (event) => {
     item.remove();
     delete items[id];
     saveItems(items);
+});
+list.addEventListener('mousedown', (event) => {
+    const target = event.target.closest('li');
+    if (!target) {
+        return;
+    }
+    let t = 0;
+    timer = setInterval(() => {
+        if (t > 3) {
+            target.classList.add('move');
+            prevX = event.clientX;
+            prevY = event.clientY;
+            moving = target;
+            movable = true;
+            clearInterval(timer);
+        }
+        t += 1;
+    }, 100);
+});
+list.addEventListener('mousemove', (event) => {
+    if (!movable)
+        return;
+    const currX = event.clientX;
+    const currY = event.clientY;
+    const moveX = currX - prevX;
+    const moveY = currY - prevY;
+    prevX = currX;
+    prevY = currY;
+    requestAnimationFrame(() => {
+        if (!moving)
+            return;
+        movedX += moveX;
+        movedY += moveY;
+        moving.style.transform = `
+    translate(${movedX}px, ${movedY}px)`;
+    });
+});
+window.addEventListener('mouseup', () => {
+    clearInterval(timer);
+    movable = false;
+    if (moving) {
+        moving.classList.remove('move');
+        moving = null;
+    }
 });
