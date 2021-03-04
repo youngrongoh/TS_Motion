@@ -36,7 +36,7 @@ type Positions = {
   [K: number]: { top: number; bottom: number };
 };
 const positions: Positions = {};
-let moving: HTMLLIElement | null;
+let moving: HTMLDivElement | null;
 let timer: number;
 let movable: boolean = false;
 let prevX: number;
@@ -217,6 +217,12 @@ function saveItems(items: Items) {
   localStorage.setItem('items', JSON.stringify(items));
 }
 
+function createSpaceBox(): HTMLDivElement {
+  const box = document.createElement('div');
+  box.classList.add('box');
+  return box;
+}
+
 buttons.addEventListener('click', showModal);
 
 modalExit.addEventListener('click', (event: MouseEvent) => {
@@ -251,17 +257,20 @@ list.addEventListener('click', (event: MouseEvent) => {
 });
 
 list.addEventListener('mousedown', (event: MouseEvent) => {
-  const target = (event.target as HTMLElement).closest('li');
+  const target = (event.target as HTMLElement).closest('div.container');
   if (!target) {
     return;
   }
   let t = 0;
   timer = setInterval(() => {
     if (t > 3) {
+      const li = target.parentNode as HTMLLIElement;
+      li.appendChild(createSpaceBox());
+      li.classList.add('move');
       target.classList.add('move');
       prevX = event.clientX;
       prevY = event.clientY;
-      moving = target;
+      moving = target as HTMLDivElement;
       movable = true;
       clearInterval(timer);
     }
@@ -290,7 +299,13 @@ window.addEventListener('mouseup', () => {
   clearInterval(timer);
   movable = false;
   if (moving) {
+    const li = moving.parentNode as HTMLLIElement;
+    li.lastChild!.remove();
+    li.classList.remove('move');
     moving.classList.remove('move');
+    moving.style.transform = '';
+    movedX = 0;
+    movedY = 0;
     moving = null;
   }
 });

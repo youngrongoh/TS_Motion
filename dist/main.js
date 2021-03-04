@@ -188,6 +188,11 @@ function onModalAddClick(event) {
 function saveItems(items) {
     localStorage.setItem('items', JSON.stringify(items));
 }
+function createSpaceBox() {
+    const box = document.createElement('div');
+    box.classList.add('box');
+    return box;
+}
 buttons.addEventListener('click', showModal);
 modalExit.addEventListener('click', (event) => {
     event.preventDefault();
@@ -217,13 +222,16 @@ list.addEventListener('click', (event) => {
     saveItems(items);
 });
 list.addEventListener('mousedown', (event) => {
-    const target = event.target.closest('li');
+    const target = event.target.closest('div.container');
     if (!target) {
         return;
     }
     let t = 0;
     timer = setInterval(() => {
         if (t > 3) {
+            const li = target.parentNode;
+            li.appendChild(createSpaceBox());
+            li.classList.add('move');
             target.classList.add('move');
             prevX = event.clientX;
             prevY = event.clientY;
@@ -256,7 +264,13 @@ window.addEventListener('mouseup', () => {
     clearInterval(timer);
     movable = false;
     if (moving) {
+        const li = moving.parentNode;
+        li.lastChild.remove();
+        li.classList.remove('move');
         moving.classList.remove('move');
+        moving.style.transform = '';
+        movedX = 0;
+        movedY = 0;
         moving = null;
     }
 });
