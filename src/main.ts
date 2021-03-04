@@ -32,17 +32,17 @@ const items: Items = {};
 
 let clickedButton: ItemKinds;
 
-type Positions = {
-  [K: number]: { top: number; bottom: number };
-};
-const positions: Positions = {};
+type Positions = number[];
+
+const positions: Positions = [];
 let moving: HTMLDivElement | null;
 let timer: number;
 let movable: boolean = false;
+let looper: boolean = false;
 let prevX: number;
 let prevY: number;
-let movedX: number = 0;
-let movedY: number = 0;
+let positionX: number = 0;
+let positionY: number = 0;
 
 function createContentInput(kind: 'input' | 'textarea'): HTMLElement {
   let input: HTMLElement;
@@ -145,7 +145,7 @@ function getItemContents(item: Item): ItemContents {
   };
 }
 
-function createItem(itemContents: ItemContents): HTMLElement {
+function createItem(itemContents: ItemContents): HTMLLIElement {
   const item = document.createElement('li');
   // 아이템 종류에 따라 구조 변경 및 입력 받은 내용 삽입
   item.setAttribute('class', `item ${itemContents.structure}`);
@@ -176,10 +176,6 @@ function addItem(itemObj: Item) {
   const itemContents = getItemContents(itemObj);
   const item = createItem(itemContents);
   list.appendChild(item);
-  const top = item.getBoundingClientRect().top;
-  const bottom = item.getBoundingClientRect().bottom;
-  positions[Object.keys(positions).length] = { top, bottom };
-  console.log(positions);
 }
 
 async function onModalAddClick(event: MouseEvent) {
@@ -249,7 +245,7 @@ list.addEventListener('click', (event: MouseEvent) => {
   if (!target.matches('.delete')) {
     return;
   }
-  const item = target.parentElement!;
+  const item = target.closest('li')!;
   const id = Number(item.dataset.id);
   item.remove();
   delete items[id];
@@ -272,40 +268,74 @@ list.addEventListener('mousedown', (event: MouseEvent) => {
       prevY = event.clientY;
       moving = target as HTMLDivElement;
       movable = true;
+      looper = true;
       clearInterval(timer);
     }
     t += 1;
   }, 100);
 });
 
+function getOrderNum(y: number): number {
+  let result: string;
+  positions.forEach((pos, i, arr) => {
+    if (result) {
+      return;
+    }
+    if (y < pos) {
+      result = i.toString();
+      return;
+    } else if (i === arr.length - 1 && y >= pos) {
+      result = i.toString();
+      return;
+    } else if (y < arr[i + 1]!) {
+      result = i.toString();
+      return;
+    }
+  });
+  return Number(result!);
+}
+
+function updatePositions() {
+  const lis = Array.from(list.querySelectorAll('li'));
+  lis.forEach((li: HTMLLIElement, i) => {
+    const top = li.getBoundingClientRect().top;
+    positions[i] = top;
+  });
+}
+
 list.addEventListener('mousemove', (event: MouseEvent) => {
   if (!movable) return;
   const currX = event.clientX;
   const currY = event.clientY;
-  const moveX = currX - prevX;
-  const moveY = currY - prevY;
-  prevX = currX;
-  prevY = currY;
+  if (looper) {
+    updatePositions();
+    setTimeout(() => (looper = false), 500);
+  }
   requestAnimationFrame(() => {
     if (!moving) return;
-    movedX += moveX;
-    movedY += moveY;
+    const moveX = currX - prevX;
+    const moveY = currY - prevY;
+    positionX += moveX;
+    positionY += moveY;
     moving.style.transform = `
-    translate(${movedX}px, ${movedY}px)`;
+    translate(${positionX}px, ${positionY}px)`;
+    prevX = currX;
+    prevY = currY;
   });
 });
 
-window.addEventListener('mouseup', () => {
+window.addEventListener('mouseup', (event: MouseEvent) => {
   clearInterval(timer);
   movable = false;
   if (moving) {
     const li = moving.parentNode as HTMLLIElement;
+    console.log(getOrderNum(event.clientY));
     li.lastChild!.remove();
     li.classList.remove('move');
     moving.classList.remove('move');
     moving.style.transform = '';
-    movedX = 0;
-    movedY = 0;
+    positionX = 0;
+    positionY = 0;
     moving = null;
   }
 });

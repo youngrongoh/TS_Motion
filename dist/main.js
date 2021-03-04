@@ -17,14 +17,15 @@ const list = document.querySelector('.list');
 const modalForm = modal.querySelector('.form-box');
 const items = {};
 let clickedButton;
-const positions = {};
+const positions = [];
 let moving;
 let timer;
 let movable = false;
+let looper = false;
 let prevX;
 let prevY;
-let movedX = 0;
-let movedY = 0;
+let positionX = 0;
+let positionY = 0;
 function createContentInput(kind) {
     let input;
     if (kind === 'input') {
@@ -153,10 +154,6 @@ function addItem(itemObj) {
     const itemContents = getItemContents(itemObj);
     const item = createItem(itemContents);
     list.appendChild(item);
-    const top = item.getBoundingClientRect().top;
-    const bottom = item.getBoundingClientRect().bottom;
-    positions[Object.keys(positions).length] = { top, bottom };
-    console.log(positions);
 }
 function onModalAddClick(event) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -215,7 +212,7 @@ list.addEventListener('click', (event) => {
     if (!target.matches('.delete')) {
         return;
     }
-    const item = target.parentElement;
+    const item = target.closest('li');
     const id = Number(item.dataset.id);
     item.remove();
     delete items[id];
@@ -237,40 +234,74 @@ list.addEventListener('mousedown', (event) => {
             prevY = event.clientY;
             moving = target;
             movable = true;
+            looper = true;
             clearInterval(timer);
         }
         t += 1;
     }, 100);
 });
+function getOrderNum(y) {
+    let result;
+    positions.forEach((pos, i, arr) => {
+        if (result) {
+            return;
+        }
+        if (y < pos) {
+            result = i.toString();
+            return;
+        }
+        else if (i === arr.length - 1 && y >= pos) {
+            result = i.toString();
+            return;
+        }
+        else if (y < arr[i + 1]) {
+            result = i.toString();
+            return;
+        }
+    });
+    return Number(result);
+}
+function updatePositions() {
+    const lis = Array.from(list.querySelectorAll('li'));
+    lis.forEach((li, i) => {
+        const top = li.getBoundingClientRect().top;
+        positions[i] = top;
+    });
+}
 list.addEventListener('mousemove', (event) => {
     if (!movable)
         return;
     const currX = event.clientX;
     const currY = event.clientY;
-    const moveX = currX - prevX;
-    const moveY = currY - prevY;
-    prevX = currX;
-    prevY = currY;
+    if (looper) {
+        updatePositions();
+        setTimeout(() => (looper = false), 500);
+    }
     requestAnimationFrame(() => {
         if (!moving)
             return;
-        movedX += moveX;
-        movedY += moveY;
+        const moveX = currX - prevX;
+        const moveY = currY - prevY;
+        positionX += moveX;
+        positionY += moveY;
         moving.style.transform = `
-    translate(${movedX}px, ${movedY}px)`;
+    translate(${positionX}px, ${positionY}px)`;
+        prevX = currX;
+        prevY = currY;
     });
 });
-window.addEventListener('mouseup', () => {
+window.addEventListener('mouseup', (event) => {
     clearInterval(timer);
     movable = false;
     if (moving) {
         const li = moving.parentNode;
+        console.log(getOrderNum(event.clientY));
         li.lastChild.remove();
         li.classList.remove('move');
         moving.classList.remove('move');
         moving.style.transform = '';
-        movedX = 0;
-        movedY = 0;
+        positionX = 0;
+        positionY = 0;
         moving = null;
     }
 });
