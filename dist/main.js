@@ -268,6 +268,21 @@ function updatePositions() {
         positions[i] = top;
     });
 }
+function changeItemPos(item, index) {
+    const lis = list.children;
+    const itemIdx = Array.from(lis).findIndex((child) => child === item);
+    const target = lis[index];
+    if (index === itemIdx) {
+        return;
+    }
+    list.removeChild(item);
+    if (itemIdx < index) {
+        target === null || target === void 0 ? void 0 : target.after(item);
+    }
+    else {
+        target === null || target === void 0 ? void 0 : target.before(item);
+    }
+}
 list.addEventListener('mousemove', (event) => {
     if (!movable)
         return;
@@ -295,7 +310,8 @@ window.addEventListener('mouseup', (event) => {
     movable = false;
     if (moving) {
         const li = moving.parentNode;
-        console.log(getOrderNum(event.clientY));
+        const order = getOrderNum(event.clientY);
+        changeItemPos(li, order);
         li.lastChild.remove();
         li.classList.remove('move');
         moving.classList.remove('move');

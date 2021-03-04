@@ -303,6 +303,21 @@ function updatePositions() {
   });
 }
 
+function changeItemPos(item: HTMLElement, index: number) {
+  const lis = list.children;
+  const itemIdx: number = Array.from(lis).findIndex((child) => child === item);
+  const target = lis[index];
+  if (index === itemIdx) {
+    return;
+  }
+  list.removeChild(item);
+  if (itemIdx < index) {
+    target?.after(item);
+  } else {
+    target?.before(item);
+  }
+}
+
 list.addEventListener('mousemove', (event: MouseEvent) => {
   if (!movable) return;
   const currX = event.clientX;
@@ -329,7 +344,8 @@ window.addEventListener('mouseup', (event: MouseEvent) => {
   movable = false;
   if (moving) {
     const li = moving.parentNode as HTMLLIElement;
-    console.log(getOrderNum(event.clientY));
+    const order = getOrderNum(event.clientY);
+    changeItemPos(li, order);
     li.lastChild!.remove();
     li.classList.remove('move');
     moving.classList.remove('move');
