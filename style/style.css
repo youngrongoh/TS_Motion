@@ -118,8 +118,13 @@ video {
   padding: 0 1.5em 1em 1.5em;
 }
 
-.item.move {
+.item.shrink {
   height: 5em;
+  transition: height 500ms ease;
+}
+
+.item.space {
+  height: 16em;
   transition: height 500ms ease;
 }
 
