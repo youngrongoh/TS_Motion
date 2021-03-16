@@ -4,7 +4,19 @@ import { Composable } from '../page/page.js';
 type OnCloseListener = () => void;
 type OnSubmitListener = () => void;
 
-export class InputDialog extends BaseComponent<HTMLElement> implements Composable {
+export interface MediaData {
+  readonly title: string;
+  readonly url: string;
+}
+
+export interface TextData {
+  readonly title: string;
+  readonly body: string;
+}
+
+export class InputDialog
+  extends BaseComponent<HTMLElement>
+  implements Composable {
   closeListener?: OnCloseListener;
   submitListener?: OnSubmitListener;
 
@@ -21,7 +33,9 @@ export class InputDialog extends BaseComponent<HTMLElement> implements Composabl
     closeBtn.onclick = () => {
       this.closeListener && this.closeListener();
     };
-    const submitBtn = this.element.querySelector('.dialog__submit')! as HTMLElement;
+    const submitBtn = this.element.querySelector(
+      '.dialog__submit'
+    )! as HTMLElement;
     submitBtn.onclick = () => {
       this.submitListener && this.submitListener();
     };
