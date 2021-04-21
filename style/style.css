@@ -26,6 +26,26 @@ label {
   color: var(--text-accent-color);
 }
 
+input {
+  border: none;
+  outline: none;
+}
+
+button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: transform .3s ease;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:active {
+  transform: scale(0.9);
+}
+
 * {
   outline: 0;
   box-sizing: border-box;
@@ -40,4 +60,119 @@ body {
   overflow: hidden;
   font-size: 1.25rem;
   margin: 0;
+}
+
+#app {
+  width: 100%;
+  max-width: 1000px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#header {
+  background: var(--bg-main-color);
+  border-bottom: 1px solid var(--bg-accent-color);
+  text-align: center;
+}
+
+.header__title {
+  margin: 20px;
+  color: var(--accent-color);
+}
+
+.header__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header__add {
+  margin: 0.1em 0.2em;
+  text-align: center;
+  user-select: none;
+  padding: 1em 3em;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: white;
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  border-radius: 2px;
+}
+
+#notes {
+  height: 100%;
+  overflow-y: auto;
+  background-color: var(--document-bg-color);
+  /* Firefox */
+  scrollbar-width: 6px;
+  scrollbar-color: var(--bg-accent-color);
+  scrollbar-face-color: var(--accent-color);
+}
+
+#notes::-webkit-scrollbar {
+  /* Safari and Chrome */
+  background-color: var(--bg-accent-color);
+  width: 6px;
+}
+
+#notes::-webkit-scrollbar-thumb {
+  /* Safari and Chrome */
+  background-color: var(--accent-color);
+}
+
+#footer {
+  background: var(--bg-main-color);
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+#modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal__form {
+  width: 450px;
+  background-color: var(--text-edit-bg-color);
+  padding: 1.5em;
+  text-align: right;
+}
+
+.modal__item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8em;
+}
+
+.modal__title {
+  margin-right: 1em;
+}
+
+.modal__input {
+  width: 100%;
+  background-color: transparent;
+  border-bottom: 1px solid var(--shadow-color);
+  color: var(--smokywhite);
+  font-size: 1em;
+}
+
+.modal__add {
+  background-color: var(--accent-color);
+  padding: 0.5em 2em;
+  font-size: 0.8em;
+  color: white;
+}
+
+.modal__exit {
+  position: absolute;
+  top: 0.5em;
+  right: 0;
+  padding: 0.5em;
+  font-size: 0.8em;
+  line-height: 0.8em;
+  background-color: transparent;
 }

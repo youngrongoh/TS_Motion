@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOTION - 나만의 마그넷 노트</title>
+  <link rel="stylesheet" href="style/style.css">
+  <script type="module" src="dist/main.js" defer></script>
+</head>
+
+<body>
+  <section id="app">
+    <header id="header">
+      <h1 class="header__title">MOTION</h1>
+      <div class="header__buttons">
+        <button class="header__add">video</button>
+        <button class="header__add">image</button>
+        <button class="header__add">task</button>
+        <button class="header__add">note</button>
+      </div>
+    </header>
+    <main id="notes">
+      <ul class="notes__list"></ul>
+    </main>
+    <footer id="footer">
+      <p class="copy">©Copyright by youngrong.oh. All right reserved.</p>
+    </footer>
+  </section>
+  <section id="modal" class="hidden">
+    <form class="modal__form">
+      <label for="title" class="modal__item">
+        <span class="modal__title">Title</span>
+        <input class="modal__input" id="title" type="text">
+      </label>
+      <label for="content" class="modal__item modal__item--content">
+        <span class="modal__title">URL</span>
+        <input class="modal__input" id="content" type="text">
+      </label>
+      <button class="modal__add">add</button>
+      <button class="modal__exit">❌</button>
+    </form>
+  </section>
+</body>
+
+</html>
