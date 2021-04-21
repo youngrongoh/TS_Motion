@@ -1,0 +1,43 @@
+:root {
+  --bg-main-color: #00000080;
+  --bg-accent-color: #2d2d2d;
+  --accent-color: #f64435;
+  --text-accent-color: #ffe498;
+  --text-edit-bg-color: #575757;
+  --border-color: #3f3f3f;
+  --shadow-color: #202020;
+  --document-bg-color: #68686850;
+  --component-bg-gradient: radial-gradient(circle, #646464e6 0%, #363636e6 100%);
+  --smokywhite: #dddbd8;
+  --black: #000000;
+  --translucent-black: #00000099;
+}
+
+li {
+  list-style: none;
+  padding-left: 0;
+}
+
+p {
+  color: var(--smokywhite);
+}
+
+label {
+  color: var(--text-accent-color);
+}
+
+* {
+  outline: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: url('../assets/background.png') center/cover no-repeat;
+  font-family: Roboto, Oxygen, sans-serif;
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+  font-size: 1.25rem;
+  margin: 0;
+}
