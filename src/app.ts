@@ -1,7 +1,11 @@
 import { PageComponent } from './page.js';
 
-const notes = document.querySelector('#notes')! as HTMLElement;
+class App {
+  private readonly page: PageComponent;
+  constructor(appRoot: HTMLElement) {
+    this.page = new PageComponent();
+    this.page.attachTo(appRoot);
+  }
+}
 
-const page = new PageComponent();
-
-page.attachTo(notes);
+new App(document.querySelector('#notes')! as HTMLElement);
