@@ -35,7 +35,7 @@ button {
   border: none;
   outline: none;
   cursor: pointer;
-  transition: transform .3s ease;
+  transition: transform 0.3s ease;
 }
 
 button:hover {
@@ -120,6 +120,10 @@ body {
 #notes::-webkit-scrollbar-thumb {
   /* Safari and Chrome */
   background-color: var(--accent-color);
+}
+
+.image__title {
+  color: var(--smokywhite);
 }
 
 #footer {
