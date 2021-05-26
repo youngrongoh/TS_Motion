@@ -1,5 +1,5 @@
-import { ImageComponent } from './components/image.js';
-import { PageComponent } from './page.js';
+import { ImageComponent } from './components/page/item/image.js';
+import { PageComponent } from './components/page/page.js';
 
 class App {
   private readonly page: PageComponent;
@@ -8,7 +8,7 @@ class App {
     this.page.attachTo(appRoot);
 
     const image = new ImageComponent('My Image', 'https://picsum.photos/500/300');
-    image.attachTo(appRoot);
+    image.attachTo(appRoot, 'beforeend');
   }
 }
 
