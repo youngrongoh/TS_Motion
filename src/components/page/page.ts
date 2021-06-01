@@ -9,6 +9,11 @@ export class PageItemComponent extends BaseComponent<HTMLLIElement> implements C
             <section class="page-item__container"></section>
             <button class="page-item__close">&times;</button>
           </li>`);
+
+    const closeBtn = this.element.querySelector('.page-item__close') as HTMLButtonElement;
+    closeBtn.addEventListener('click', () => {
+      this.element.remove();
+    });
   }
 
   addChild(child: Component) {
