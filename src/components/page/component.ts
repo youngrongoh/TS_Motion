@@ -8,7 +8,7 @@ export class BaseComponent<T extends HTMLElement> implements Component {
   constructor(htmlString: string) {
     const template = document.createElement('template');
     template.innerHTML = htmlString;
-
+    console.log(template);
     this.element = template.content.firstElementChild as T;
   }
 
