@@ -1,6 +1,6 @@
 import { ImageComponent } from './components/page/item/image.js';
 import { NoteComponent } from './components/page/item/note.js';
-import { TaskComponent } from './components/page/item/task.js';
+import { TodoComponent } from './components/page/item/todo.js';
 import { VideoComponent } from './components/page/item/video.js';
 import { PageComponent } from './components/page/page.js';
 
@@ -16,8 +16,8 @@ class App {
     const video = new VideoComponent('My Video', 'https://www.youtube.com/embed/M7lc1UVf-VE');
     video.attachTo(appRoot, 'beforeend');
 
-    const task = new TaskComponent('title', 'task');
-    task.attachTo(appRoot, 'beforeend');
+    const todo = new TodoComponent('title', 'task');
+    todo.attachTo(appRoot, 'beforeend');
 
     const note = new NoteComponent('title', 'this is note');
     note.attachTo(appRoot, 'beforeend');
