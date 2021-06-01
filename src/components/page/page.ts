@@ -3,7 +3,11 @@ import { BaseComponent, Component } from './component.js';
 export interface Composable {
   addChild(child: Component): void;
 }
+
+type OnClickListener = () => void;
 export class PageItemComponent extends BaseComponent<HTMLLIElement> implements Composable {
+  private onClickListener?: OnClickListener;
+
   constructor() {
     super(`<li class="page-item">
             <section class="page-item__container"></section>
@@ -11,14 +15,16 @@ export class PageItemComponent extends BaseComponent<HTMLLIElement> implements C
           </li>`);
 
     const closeBtn = this.element.querySelector('.page-item__close') as HTMLButtonElement;
-    closeBtn.addEventListener('click', () => {
-      this.element.remove();
-    });
+    closeBtn.addEventListener('click', () => this.onClickListener && this.onClickListener());
   }
 
   addChild(child: Component) {
     const container = this.element.querySelector('.page-item__container') as HTMLElement;
     child.attachTo(container);
+  }
+
+  setOnClickListener(listener: OnClickListener) {
+    this.onClickListener = listener;
   }
 }
 
@@ -28,8 +34,9 @@ export class PageComponent extends BaseComponent<HTMLUListElement> implements Co
   }
 
   addChild(section: Component) {
-    const container = new PageItemComponent();
-    container.addChild(section);
-    container.attachTo(this.element, 'beforeend');
+    const item = new PageItemComponent();
+    item.addChild(section);
+    item.attachTo(this.element, 'beforeend');
+    item.setOnClickListener(() => item.removeFrom(this.element));
   }
 }
