@@ -1,5 +1,9 @@
 import { BaseComponent, Component } from './component.js';
 
+interface Constructible<T> {
+  new (): T;
+}
+
 export interface Composable {
   addChild(child: Component): void;
 }
@@ -28,13 +32,16 @@ export class PageItemComponent extends BaseComponent<HTMLLIElement> implements C
   }
 }
 
-export class PageComponent extends BaseComponent<HTMLUListElement> implements Composable {
-  constructor() {
+export class PageComponent<T extends PageItemComponent>
+  extends BaseComponent<HTMLUListElement>
+  implements Composable
+{
+  constructor(private ItemContainer: Constructible<T>) {
     super('<ul class="page">페이지 컴포넌트가 추가되었습니다.</ul>');
   }
 
   addChild(section: Component) {
-    const item = new PageItemComponent();
+    const item = new this.ItemContainer();
     item.addChild(section);
     item.attachTo(this.element, 'beforeend');
     item.setOnClickListener(() => item.removeFrom(this.element));
