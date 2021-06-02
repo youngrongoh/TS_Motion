@@ -1,3 +1,4 @@
+import { InputDialog } from './components/dialog/dialog.js';
 import { Component } from './components/page/component.js';
 import { ImageComponent } from './components/page/item/image.js';
 import { NoteComponent } from './components/page/item/note.js';
@@ -25,6 +26,19 @@ class App {
       'https://www.youtube.com/embed/M7lc1UVf-VE'
     );
     this.page.addChild(video);
+
+    const imageBtn = document.querySelector('#new-image') as HTMLButtonElement;
+    imageBtn.addEventListener('click', () => {
+      const dialog = new InputDialog();
+
+      dialog.setOnCloseListener(() => dialog.removeFrom(document.body));
+      dialog.setOnSubmitListener(() => {
+        // 섹션을 만들고 페이지에 추가
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.attachTo(document.body);
+    });
   }
 }
 
