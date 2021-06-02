@@ -1,15 +1,22 @@
 import { BaseComponent, Component } from './component.js';
 
-interface Constructible<T> {
-  new (): T;
-}
-
 export interface Composable {
   addChild(child: Component): void;
 }
 
 type OnClickListener = () => void;
-export class PageItemComponent extends BaseComponent<HTMLLIElement> implements Composable {
+
+interface SectionContainer extends Component, Composable {
+  setOnClickListener(listener: OnClickListener): void;
+}
+
+type SectionContainerConstructor = {
+  new (): SectionContainer;
+};
+export class PageItemComponent
+  extends BaseComponent<HTMLLIElement>
+  implements SectionContainer
+{
   private onClickListener?: OnClickListener;
 
   constructor() {
@@ -32,16 +39,13 @@ export class PageItemComponent extends BaseComponent<HTMLLIElement> implements C
   }
 }
 
-export class PageComponent<T extends PageItemComponent>
-  extends BaseComponent<HTMLUListElement>
-  implements Composable
-{
-  constructor(private ItemContainer: Constructible<T>) {
+export class PageComponent extends BaseComponent<HTMLUListElement> implements Composable {
+  constructor(private pageItemConstructor: SectionContainerConstructor) {
     super('<ul class="page">페이지 컴포넌트가 추가되었습니다.</ul>');
   }
 
   addChild(section: Component) {
-    const item = new this.ItemContainer();
+    const item = new this.pageItemConstructor();
     item.addChild(section);
     item.attachTo(this.element, 'beforeend');
     item.setOnClickListener(() => item.removeFrom(this.element));
