@@ -1,4 +1,5 @@
-import { Component } from './components/page/component';
+import { Dialog } from './components/page/dialog.js';
+import { Component } from './components/page/component.js';
 import { ImageComponent } from './components/page/item/image.js';
 import { NoteComponent } from './components/page/item/note.js';
 import { TodoComponent } from './components/page/item/todo.js';
@@ -22,6 +23,16 @@ class App {
 
     const note = new NoteComponent('title', 'this is note');
     this.page.addChild(note);
+
+    const dialog = new Dialog();
+    dialog.setOnClickListener(() => dialog.removeFrom(appRoot));
+
+    const btns = document.querySelector('.header__buttons') as HTMLDivElement;
+    const imageBtn = btns.querySelector('.image') as HTMLButtonElement;
+
+    imageBtn.addEventListener('click', () => {
+      dialog.attachTo(appRoot);
+    });
   }
 }
 

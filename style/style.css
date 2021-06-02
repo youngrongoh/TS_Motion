@@ -136,13 +136,13 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
+  background-color: var(--text-edit-bg-color);
+  padding: 1.5em;
   transform: translate(-50%, -50%);
 }
 
 .modal__form {
   width: 450px;
-  background-color: var(--text-edit-bg-color);
-  padding: 1.5em;
   text-align: right;
 }
 
@@ -171,7 +171,7 @@ body {
   color: white;
 }
 
-.modal__exit {
+.modal__close {
   position: absolute;
   top: 0.5em;
   right: 0;

@@ -4,7 +4,7 @@ export interface Composable {
   addChild(child: Component): void;
 }
 
-type OnClickListener = () => void;
+export type OnClickListener = () => void;
 
 interface SectionContainer extends Component, Composable {
   setOnClickListener(listener: OnClickListener): void;
