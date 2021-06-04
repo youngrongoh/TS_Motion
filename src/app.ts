@@ -1,3 +1,4 @@
+import { DialogForm } from './components/dialog/content/form.js';
 import { InputDialog } from './components/dialog/dialog.js';
 import { Component } from './components/page/component.js';
 import { ImageComponent } from './components/page/item/image.js';
@@ -25,13 +26,76 @@ class App {
     this.page.addChild(note);
 
     const imageBtn = document.querySelector('#add-image') as HTMLButtonElement;
+    const videoBtn = document.querySelector('#add-video') as HTMLButtonElement;
+    const noteBtn = document.querySelector('#add-note') as HTMLButtonElement;
+    const todoBtn = document.querySelector('#add-todo') as HTMLButtonElement;
+
     imageBtn.addEventListener('click', () => {
       const dialog = new InputDialog();
+      const form = new DialogForm('media');
+      dialog.addChild(form);
 
       dialog.setOnCloseListener(() => dialog.removeFrom(document.body));
 
       dialog.setOnSubmitListener(() => {
         // 섹션을 만들어 페이지에 추가
+        const [title, content] = form.getData();
+        const element = new ImageComponent(title!, content!);
+        this.page.addChild(element);
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.attachTo(document.body);
+    });
+
+    videoBtn.addEventListener('click', () => {
+      const dialog = new InputDialog();
+      const form = new DialogForm('media');
+      dialog.addChild(form);
+
+      dialog.setOnCloseListener(() => dialog.removeFrom(document.body));
+
+      dialog.setOnSubmitListener(() => {
+        // 섹션을 만들어 페이지에 추가
+        const [title, content] = form.getData();
+        const element = new VideoComponent(title!, content!);
+        this.page.addChild(element);
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.attachTo(document.body);
+    });
+
+    noteBtn.addEventListener('click', () => {
+      const dialog = new InputDialog();
+      const form = new DialogForm('text');
+      dialog.addChild(form);
+
+      dialog.setOnCloseListener(() => dialog.removeFrom(document.body));
+
+      dialog.setOnSubmitListener(() => {
+        // 섹션을 만들어 페이지에 추가
+        const [title, content] = form.getData();
+        const element = new NoteComponent(title!, content!);
+        this.page.addChild(element);
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.attachTo(document.body);
+    });
+
+    todoBtn.addEventListener('click', () => {
+      const dialog = new InputDialog();
+      const form = new DialogForm('text');
+      dialog.addChild(form);
+
+      dialog.setOnCloseListener(() => dialog.removeFrom(document.body));
+
+      dialog.setOnSubmitListener(() => {
+        // 섹션을 만들어 페이지에 추가
+        const [title, content] = form.getData();
+        const element = new TodoComponent(title!, content!);
+        this.page.addChild(element);
         dialog.removeFrom(document.body);
       });
 
