@@ -1,4 +1,4 @@
-import { Dialog } from './components/page/dialog.js';
+import { InputDialog } from './components/dialog/dialog.js';
 import { Component } from './components/page/component.js';
 import { ImageComponent } from './components/page/item/image.js';
 import { NoteComponent } from './components/page/item/note.js';
@@ -24,14 +24,18 @@ class App {
     const note = new NoteComponent('title', 'this is note');
     this.page.addChild(note);
 
-    const dialog = new Dialog();
-    dialog.setOnClickListener(() => dialog.removeFrom(appRoot));
-
-    const btns = document.querySelector('.header__buttons') as HTMLDivElement;
-    const imageBtn = btns.querySelector('.image') as HTMLButtonElement;
-
+    const imageBtn = document.querySelector('#add-image') as HTMLButtonElement;
     imageBtn.addEventListener('click', () => {
-      dialog.attachTo(appRoot);
+      const dialog = new InputDialog();
+
+      dialog.setOnCloseListener(() => dialog.removeFrom(document.body));
+
+      dialog.setOnSubmitListener(() => {
+        // 섹션을 만들어 페이지에 추가
+        dialog.removeFrom(document.body);
+      });
+
+      dialog.attachTo(document.body);
     });
   }
 }

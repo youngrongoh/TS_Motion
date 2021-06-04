@@ -46,6 +46,10 @@ button:active {
   transform: scale(0.9);
 }
 
+dialog {
+  border: none;
+}
+
 * {
   outline: 0;
   box-sizing: border-box;
@@ -132,31 +136,39 @@ body {
   text-align: center;
 }
 
-#modal {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background-color: var(--text-edit-bg-color);
-  padding: 1.5em;
-  transform: translate(-50%, -50%);
+#dialog {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: #bcbcbc50;
+  z-index: 1;
 }
 
-.modal__form {
+.dialog__container {
+  position: relative;
+  width: 350px;
+  background-color: var(--text-edit-bg-color);
+  padding: 1.5em;
+}
+
+.dialog__form {
   width: 450px;
   text-align: right;
 }
 
-.modal__item {
+.dialog__item {
   display: flex;
   justify-content: space-between;
   margin-bottom: 0.8em;
 }
 
-.modal__title {
+.dialog__title {
   margin-right: 1em;
 }
 
-.modal__input {
+.dialog__input {
   width: 100%;
   background-color: transparent;
   border-bottom: 1px solid var(--shadow-color);
@@ -164,19 +176,19 @@ body {
   font-size: 1em;
 }
 
-.modal__add {
-  background-color: var(--accent-color);
-  padding: 0.5em 2em;
-  font-size: 0.8em;
-  color: white;
-}
-
-.modal__close {
+.close {
   position: absolute;
   top: 0.5em;
-  right: 0;
+  right: 0.5em;
   padding: 0.5em;
   font-size: 0.8em;
   line-height: 0.8em;
   background-color: transparent;
+}
+
+.dialog__submit {
+  background-color: var(--accent-color);
+  padding: 0.5em 2em;
+  font-size: 0.8em;
+  color: white;
 }
