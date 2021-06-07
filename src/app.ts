@@ -10,84 +10,57 @@ import { Composable, PageComponent, PageItemComponent } from './components/page/
 
 class App {
   private readonly page: Component & Composable;
-  constructor(appRoot: HTMLElement, dialogRoot: HTMLElement) {
+  constructor(appRoot: HTMLElement, private dialogRoot: HTMLElement) {
     this.page = new PageComponent(PageItemComponent);
     this.page.attachTo(appRoot);
-    
-    const imageBtn = document.querySelector('#add-image') as HTMLButtonElement;
-    const videoBtn = document.querySelector('#add-video') as HTMLButtonElement;
-    const noteBtn = document.querySelector('#add-note') as HTMLButtonElement;
-    const todoBtn = document.querySelector('#add-todo') as HTMLButtonElement;
 
-    imageBtn.addEventListener('click', () => {
+    this.addButtonEvent('video');
+    this.addButtonEvent('image');
+    this.addButtonEvent('note');
+    this.addButtonEvent('todo');
+  }
+
+  addButtonEvent = (type: string) => {
+    const button = document.querySelector(`#add-${type}`) as HTMLButtonElement;
+    button.addEventListener('click', () => {
       const dialog = new InputDialog();
-      const sectionInput = new MediaSectionInput();
+      let sectionInput: MediaSectionInput | TextSectionInput;
+      if (type === 'video' || type === 'image') {
+        sectionInput = new MediaSectionInput();
+      } else {
+        sectionInput = new TextSectionInput();
+      }
       dialog.addChild(sectionInput);
-      dialog.attachTo(dialogRoot);
+      dialog.attachTo(this.dialogRoot);
 
-      dialog.setOnCloseListener(() => dialog.removeFrom(dialogRoot));
+      dialog.setOnCloseListener(() => dialog.removeFrom(this.dialogRoot));
 
       dialog.setOnSubmitListener(() => {
         // 섹션을 만들어 페이지에 추가
         const title = sectionInput.title;
-        const url = sectionInput.url;
-        const element = new ImageComponent(title, url);
+        const content = sectionInput instanceof MediaSectionInput ?
+          (<MediaSectionInput>sectionInput).url :
+          (<TextSectionInput>sectionInput).body;
+
+        let element: Component;
+        switch (type) {
+          case 'video':
+            element = new VideoComponent(title, content);
+            break;
+          case 'image':
+            element = new ImageComponent(title, content);
+            break;
+          case 'todo':
+            element = new TodoComponent(title, content);
+            break;
+          case 'note':
+            element = new NoteComponent(title, content);
+            break;
+          default:
+            throw new Error('invalid type');
+        } 
         this.page.addChild(element);
-        dialog.removeFrom(dialogRoot);
-      });
-    });
-
-    videoBtn.addEventListener('click', () => {
-      const dialog = new InputDialog();
-      const sectionInput = new MediaSectionInput();
-      dialog.addChild(sectionInput);
-      dialog.attachTo(dialogRoot);
-
-      dialog.setOnCloseListener(() => dialog.removeFrom(dialogRoot));
-
-      dialog.setOnSubmitListener(() => {
-        // 섹션을 만들어 페이지에 추가
-        const title = sectionInput.title;
-        const url = sectionInput.url;
-        const element = new VideoComponent(title, url);
-        this.page.addChild(element);
-        dialog.removeFrom(dialogRoot);
-      });
-    });
-
-    noteBtn.addEventListener('click', () => {
-      const dialog = new InputDialog();
-      const sectionInput = new TextSectionInput();
-      dialog.addChild(sectionInput);
-      dialog.attachTo(dialogRoot);
-
-      dialog.setOnCloseListener(() => dialog.removeFrom(dialogRoot));
-
-      dialog.setOnSubmitListener(() => {
-        // 섹션을 만들어 페이지에 추가
-        const title = sectionInput.title;
-        const body = sectionInput.body;
-        const element = new NoteComponent(title, body);
-        this.page.addChild(element);
-        dialog.removeFrom(dialogRoot);
-      });
-    });
-
-    todoBtn.addEventListener('click', () => {
-      const dialog = new InputDialog();
-      const sectionInput = new TextSectionInput();
-      dialog.addChild(sectionInput);
-      dialog.attachTo(dialogRoot);
-
-      dialog.setOnCloseListener(() => dialog.removeFrom(dialogRoot));
-
-      dialog.setOnSubmitListener(() => {
-        // 섹션을 만들어 페이지에 추가
-        const title = sectionInput.title;
-        const body = sectionInput.body;
-        const element = new TodoComponent(title, body);
-        this.page.addChild(element);
-        dialog.removeFrom(dialogRoot);
+        dialog.removeFrom(this.dialogRoot);
       });
     });
   }
