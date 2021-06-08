@@ -1,7 +1,7 @@
 import { TextSectionInput } from './components/dialog/input/text-input.js';
 import { InputDialog, MediaData, TextData } from './components/dialog/dialog.js';
 import { MediaSectionInput } from './components/dialog/input/media-input.js';
-import { Component } from './components/page/component.js';
+import { Component } from './components/component.js';
 import { ImageComponent } from './components/page/item/image.js';
 import { NoteComponent } from './components/page/item/note.js';
 import { TodoComponent } from './components/page/item/todo.js';

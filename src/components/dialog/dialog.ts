@@ -1,4 +1,4 @@
-import { BaseComponent, Component } from '../page/component.js';
+import { BaseComponent, Component } from '../component.js';
 import { Composable } from '../page/page.js';
 
 type OnCloseListener = () => void;
