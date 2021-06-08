@@ -1,4 +1,4 @@
-import { BaseComponent } from '../../page/component.js';
+import { BaseComponent } from '../../component.js';
 import { TextData } from '../dialog.js';
 
 export class TextSectionInput extends BaseComponent<HTMLElement> implements TextData {
@@ -10,7 +10,7 @@ export class TextSectionInput extends BaseComponent<HTMLElement> implements Text
             </div>
             <div class="form__container">
               <label for="body" id="label-content" class="form__label">Body</label>
-              <input type="text" id="body">
+              <textarea type="text" id="body"></textarea>
             </div>
           </div>`);
   }

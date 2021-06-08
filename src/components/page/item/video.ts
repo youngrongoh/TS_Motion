@@ -1,4 +1,4 @@
-import { BaseComponent } from '../component.js';
+import { BaseComponent } from '../../component.js';
 
 export class VideoComponent extends BaseComponent<HTMLElement> {
   constructor(title: string, url: string) {
@@ -6,7 +6,7 @@ export class VideoComponent extends BaseComponent<HTMLElement> {
             <div class="video__player">
               <iframe class="video__iframe" allowfullscreen></iframe>
             </div>
-            <h2 class="video__title"></h2>
+            <h2 class="page-item__title video__title"></h2>
           </section>`);
 
     const iframe = this.element.querySelector('.video__iframe') as HTMLIFrameElement;
