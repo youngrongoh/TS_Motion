@@ -13,6 +13,7 @@ interface SectionContainer extends Component, Composable {
   setOnDragStateListener(listener: OnDragStateListener<SectionContainer>): void;
   muteChildren(state: 'mute' | 'unmute'): void;
   getBoundingRect(): DOMRect;
+  onDropped(): void;
 }
 
 type SectionContainerConstructor = {
@@ -55,16 +56,24 @@ export class PageItemComponent extends BaseComponent<HTMLElement> implements Sec
 
   onDragStart(_: DragEvent) {
     this.notifyDragObservers('start');
+    this.element.classList.add('lifted');
   }
   onDragEnd(_: DragEvent) {
     this.notifyDragObservers('stop');
+    this.element.classList.remove('lifted');
   }
 
   onDragEnter(_: DragEvent) {
     this.notifyDragObservers('enter');
+    this.element.classList.add('drop-area');
   }
   onDragLeave(_: DragEvent) {
     this.notifyDragObservers('leave');
+    this.element.classList.remove('drop-area');
+  }
+
+  onDropped() {
+    this.element.classList.remove('drop-area');
   }
 
   notifyDragObservers(state: DragState) {
@@ -115,14 +124,12 @@ export class PageComponent extends BaseComponent<HTMLUListElement> implements Co
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
-    console.log('onDragOver');
   }
 
   onDrop(event: DragEvent) {
     event.preventDefault();
     if (!this.dropTarget) return;
     // 위치 변경
-    console.log('onDrop');
 
     if (this.dragTarget && this.dropTarget !== this.dragTarget) {
       const dropY = event.y;
@@ -133,6 +140,7 @@ export class PageComponent extends BaseComponent<HTMLUListElement> implements Co
         dropY > srcElement.y ? 'afterend' : 'beforebegin'
       );
     }
+    this.dropTarget.onDropped();
   }
 
   addChild(section: Component) {
